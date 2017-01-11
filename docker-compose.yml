@@ -1,0 +1,26 @@
+version: '2'
+services:
+    postgres_master:
+        build: .
+        ports:
+            - "5432:5432"
+        environment:
+            - POSTGRES_PASSWORD=bdr_pass
+            - POSTGRES_USER=bdr_test
+        volumes_from:
+            - postgres_data
+    postgres_data:
+        image: busybox
+        volumes:
+            - /var/lib/pgsql/9.4-bdr/data/
+
+    postgres_slave:
+        build: .
+        ports:
+            - "5432"
+        depends_on:
+            - postgres_master
+        environment:
+            - POSTGRES_PASSWORD=bdr_pass
+            - POSTGRES_USER=bdr_test
+
